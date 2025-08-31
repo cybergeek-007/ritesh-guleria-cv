@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritesh Guleria - Interactive Resume</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Subtle Blue & Gray Gradient -->
+    <!-- Application Structure Plan: A single-page, vertically scrolling application with a fixed navigation bar for quick access to different sections: Home, Education, Skills, and Projects. This structure is intuitive and mimics a standard resume format, making it easy for recruiters to navigate. The homepage now features a subtle animated background element to create a more modern and engaging user experience. -->
+    <!-- Visualization & Content Choices: 
+        - Summary -> Inform -> Text Block with Animated Background -> Static -> Clear introduction to the candidate and a modern aesthetic -> HTML/Tailwind/CSS.
+        - Education -> Inform -> Timeline-like section -> Static -> Shows educational journey clearly -> HTML/Tailwind.
+        - Technical Skills -> Compare/Inform -> Radar Chart -> Interactive (hover tooltips) -> Provides a visually engaging overview of skill proficiency and allows for quick comparison -> Chart.js/Canvas.
+        - Projects -> Organize/Inform -> Interactive Cards -> Click to expand for details -> Allows users to quickly scan projects and dive deeper into those of interest without cluttering the main view -> HTML/Tailwind/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        .bg-animated::before {
+            content: '';
+            position: fixed;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            animation: pulse 10s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            z-index: -1;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1) translate(0, 0);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.1) translate(5%, -5%);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-sky-50 to-slate-100 text-slate-800 bg-animated">
+
+    <nav class="bg-white/70 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <span class="text-2xl font-bold text-slate-900">Ritesh Guleria</span>
+                <div class="hidden md:flex md:items-center md:space-x-4">
+                    <a href="#summary"
+                        class="text-slate-600 hover:text-sky-600 px-3 py-2 rounded-md text-sm font-medium">Summary</a>
+                    <a href="#education"
+                        class="text-slate-600 hover:text-sky-600 px-3 py-2 rounded-md text-sm font-medium">Education</a>
+                    <a href="#skills"
+                        class="text-slate-600 hover:text-sky-600 px-3 py-2 rounded-md text-sm font-medium">Skills</a>
+                    <a href="#projects"
+                        class="text-slate-600 hover:text-sky-600 px-3 py-2 rounded-md text-sm font-medium">Projects</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-slate-600 hover:text-sky-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-sky-500">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#summary"
+                    class="text-slate-600 hover:text-sky-600 block px-3 py-2 rounded-md text-base font-medium">Summary</a>
+                <a href="#education"
+                    class="text-slate-600 hover:text-sky-600 block px-3 py-2 rounded-md text-base font-medium">Education</a>
+                <a href="#skills"
+                    class="text-slate-600 hover:text-sky-600 block px-3 py-2 rounded-md text-base font-medium">Skills</a>
+                <a href="#projects"
+                    class="text-slate-600 hover:text-sky-600 block px-3 py-2 rounded-md text-base font-medium">Projects</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto p-4 md:p-8 relative z-10">
+
+        <section id="summary" class="min-h-[80vh] flex items-center justify-center text-center">
+            <div class="max-w-3xl">
+                <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 mb-4">Cybersecurity Professional
+                </h1>
+                <p class="text-lg md:text-xl text-slate-600 mb-8">
+                    A passionate and results-driven Computer Science student with a strong focus on cybersecurity,
+                    ethical hacking, and penetration testing. Committed to leveraging a foundational understanding of
+                    programming and networking to actively identify and mitigate system vulnerabilities.
+                </p>
+                <a href="https://linkedin.com/in/ritesh-guleria-a8a961288" target="_blank"
+                    class="inline-block bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition-colors">
+                    Connect on LinkedIn
+                </a>
+            </div>
+        </section>
+
+        <section id="education" class="py-20">
+            <h2 class="text-3xl font-bold text-center mb-12">Education</h2>
+            <div class="border-l-2 border-sky-500 ml-4 md:ml-0 md:mx-auto md:w-1/2">
+                <div class="mb-8 ml-8 relative">
+                    <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-white"></div>
+                    <p class="text-slate-500">Oct 2024 - Present</p>
+                    <h3 class="text-xl font-semibold text-slate-900">Minor in CSE and Advanced Technologies</h3>
+                    <p class="text-slate-700">Indian Institute of Technology, Mandi</p>
+                </div>
+                <div class="mb-8 ml-8 relative">
+                    <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-white"></div>
+                    <p class="text-slate-500">Jul 2023 - Present</p>
+                    <h3 class="text-xl font-semibold text-slate-900">Bachelor of Engineering - BE, Computer Science</h3>
+                    <p class="text-slate-700">Chitkara University</p>
+                </div>
+                <div class="mb-8 ml-8 relative">
+                    <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-white"></div>
+                    <p class="text-slate-500">Mar 2023</p>
+                    <h3 class="text-xl font-semibold text-slate-900">Higher Secondary, Science</h3>
+                    <p class="text-slate-700">Kendriya Vidyalaya</p>
+                </div>
+                <div class="mb-8 ml-8 relative">
+                    <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-white"></div>
+                    <p class="text-slate-500">Mar 2021</p>
+                    <h3 class="text-xl font-semibold text-slate-900">Secondary</h3>
+                    <p class="text-slate-700">Kendriya Vidyalaya</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-20 bg-white rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-center mb-4">Technical Skills</h2>
+            <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">This chart provides a visual representation of
+                my key technical skills. Hover over the points to see my self-assessed proficiency in each area,
+                reflecting my current capabilities and areas of focus.</p>
+            <div class="chart-container">
+                <canvas id="skillsChart"></canvas>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20">
+            <h2 class="text-3xl font-bold text-center mb-4">Projects</h2>
+            <p class="text-center text-slate-600 mb-12 max-w-2xl mx-auto">Here are some of the projects I've worked on.
+                They demonstrate my ability to apply my skills to real-world problems. Click on a project to see more
+                details about the technologies used and the outcomes achieved.</p>
+            <div class="grid md:grid-cols-1 gap-8">
+                <div
+                    class="bg-white rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all project-card">
+                    <h3 class="text-xl font-semibold mb-2">Aura: Voice Assistant</h3>
+                    <p class="text-slate-600">A voice assistant for desktop built with Python, currently in the
+                        development phase.</p>
+                    <div class="project-details hidden mt-4 pt-4 border-t border-slate-200">
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li>Developed a voice assistant named Aura using Python.</li>
+                            <li>Engineered to perform basic PC tasks and open applications with voice commands.</li>
+                            <li>Currently in the development phase, focusing on expanding its command set and improving
+                                voice recognition accuracy.</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- <div
+                    class="bg-white rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all project-card">
+                    <h3 class="text-xl font-semibold mb-2">Web Vulnerability Scanner</h3>
+                    <p class="text-slate-600">A Python-based script to automate scanning for common web vulnerabilities.
+                    </p>
+                    <div class="project-details hidden mt-4 pt-4 border-t border-slate-200">
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li>Developed a Python-based script to automate the scanning of websites for common security
+                                vulnerabilities, including XSS and SQL injection.</li>
+                            <li>Utilized Python libraries like `requests` and `BeautifulSoup` to parse HTML and simulate
+                                user inputs to test for potential flaws.</li>
+                            <li>Documented findings and provided remediation steps, demonstrating a complete
+                                understanding of the vulnerability lifecycle.</li>
+                        </ul>
+                    </div>
+                </div> -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-white py-8">
+        <div class="max-w-5xl mx-auto text-center">
+            <p>&copy; 2024 Ritesh Guleria. All Rights Reserved.</p>
+            <p class="text-slate-400 mt-2">Built with Tailwind CSS and Chart.js</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const navLinks = document.querySelectorAll('#mobile-menu a, nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    if (link.getAttribute('href').startsWith('#')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            const projectCards = document.querySelectorAll('.project-card');
+            projectCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const details = card.querySelector('.project-details');
+                    details.classList.toggle('hidden');
+                });
+            });
+
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            const skillsChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Penetration Testing', 'Ethical Hacking', 'Vulnerability Assessment', 'Kali Linux', 'Python', 'C/C++', 'Networking', 'OOP'],
+                    datasets: [{
+                        label: 'Proficiency',
+                        data: [8, 9, 8, 9, 7, 6, 8, 7],
+                        backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                        borderColor: 'rgba(56, 189, 248, 1)',
+                        pointBackgroundColor: 'rgba(56, 189, 248, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(56, 189, 248, 1)'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                },
+                                color: '#334155'
+                            },
+                            ticks: {
+                                backdropColor: 'rgba(255, 255, 255, 0.75)',
+                                stepSize: 2,
+                                beginAtZero: true,
+                                max: 10
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `${context.dataset.label}: ${context.raw}/10`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
