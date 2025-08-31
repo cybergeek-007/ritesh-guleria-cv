@@ -20,6 +20,6 @@ Chart.js: To create the interactive data visualization for the skills section.
 JavaScript: To handle all interactive elements, including navigation and project details.
 
 ## How to View
-To view this resume, simply open the index.html file in your web browser. For the best experience, visit the live version at:
+To view this resume, simply open the link below or the index.html file in your web browser.
 
-[Insert Live Demo Link Here]
+→ https://riteshguleriacv.vercel.app/
