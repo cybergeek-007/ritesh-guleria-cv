@@ -1,459 +1,461 @@
-    <!DOCTYPE html>
-    <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Ritesh Guleria - Interactive Resume</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-        <!-- Chosen Palette: Dark & Cyber Neon -->
-        <!-- Application Structure Plan: A single-page, vertically scrolling application with a fixed navigation bar for quick access to different sections: Home, Cyber Profile, Education, Skills, and Projects. Each section is full-height to provide a presentation-like, impactful viewing experience. The background features a dynamic particle animation for a high-tech, engaging feel. -->
-        <!-- Visualization & Content Choices: 
-            - Summary -> Inform -> Text Block with Animated Background -> Static -> Provides a clear introduction and sets a high-tech tone -> HTML/Tailwind/JS.
-            - Cyber Profile -> Inform -> Live TryHackMe Badge -> Live iframe -> Instantly validates hands-on skills -> HTML/Tailwind/Iframe.
-            - Education -> Inform -> Timeline-like section -> Static -> Shows educational journey clearly -> HTML/Tailwind.
-            - Technical Skills -> Compare/Inform -> Radar Chart -> Interactive (hover tooltips) -> Provides a visually engaging overview of skill proficiency -> Chart.js/Canvas.
-            - Certifications -> Inform -> Badges/Text -> Interactive (click to enlarge) -> Highlights official qualifications and allows for a detailed view -> HTML/Tailwind/JS.
-            - Projects -> Organize/Inform -> Interactive Cards -> Click to expand for details -> Allows users to quickly scan projects and dive deeper into those of interest -> HTML/Tailwind/JS.
-        -->
-        <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-        <style>
-            body {
-                font-family: 'Inter', sans-serif;
-                scroll-behavior: smooth;
-            }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritesh Guleria - Interactive Resume</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Dark & Cyber Neon -->
+    <!-- Application Structure Plan: A single-page, vertically scrolling application with a fixed navigation bar for quick access to different sections: Home, Cyber Profile, Education, Skills, and Projects. Each section is full-height to provide a presentation-like, impactful viewing experience. The background features a dynamic particle animation for a high-tech, engaging feel. -->
+    <!-- Visualization & Content Choices: 
+        - Summary -> Inform -> Text Block with Animated Background -> Static -> Provides a clear introduction and sets a high-tech tone -> HTML/Tailwind/JS.
+        - Cyber Profile -> Inform -> Live TryHackMe Badge -> Live iframe -> Instantly validates hands-on skills -> HTML/Tailwind/Iframe.
+        - Education -> Inform -> Timeline-like section -> Static -> Shows educational journey clearly -> HTML/Tailwind.
+        - Technical Skills -> Compare/Inform -> Radar Chart -> Interactive (hover tooltips) -> Provides a visually engaging overview of skill proficiency -> Chart.js/Canvas.
+        - Certifications -> Inform -> Badges/Text -> Interactive (click to enlarge) -> Highlights official qualifications and allows for a detailed view -> HTML/Tailwind/JS.
+        - Projects -> Organize/Inform -> Interactive Cards -> Click to expand for details -> Allows users to quickly scan projects and dive deeper into those of interest -> HTML/Tailwind/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
 
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
             .chart-container {
-                position: relative;
-                width: 100%;
-                max-width: 600px;
-                margin-left: auto;
-                margin-right: auto;
-                height: 300px;
-                max-height: 400px;
+                height: 400px;
             }
-
-            @media (min-width: 768px) {
-                .chart-container {
-                    height: 400px;
-                }
-            }
-            
-            .modal {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.9);
-                display: none;
-                justify-content: center;
-                align-items: center;
-                z-index: 100;
-            }
-
-            .modal-content {
-                max-width: 90%;
-                max-height: 90%;
-            }
-
-            .close-button {
-                position: absolute;
-                top: 20px;
-                right: 30px;
-                font-size: 30px;
-                font-weight: bold;
-                color: #fff;
-                cursor: pointer;
-            }
-        </style>
-    </head>
-
-    <body class="bg-gray-900 text-gray-200">
-        <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full z-0"></canvas>
+        }
         
-        <nav class="bg-gray-800/70 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-            <div class="max-w-5xl mx-auto px-4">
-                <div class="flex items-center justify-between h-16">
-                    <span class="text-2xl font-bold text-sky-400">Ritesh Guleria</span>
-                    <div class="hidden md:flex md:items-center md:space-x-4">
-                        <a href="#summary"
-                            class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Summary</a>
-                        <a href="#cyber-profile"
-                            class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Cyber Profile</a>
-                        <a href="#education"
-                            class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Education</a>
-                        <a href="#skills"
-                            class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Skills</a>
-                        <a href="#certifications"
-                            class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Certifications</a>
-                        <a href="#projects"
-                            class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Projects</a>
-                    </div>
-                    
-                    <div class="md:hidden flex items-center">
-                        <button id="mobile-menu-button"
-                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-sky-400 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-sky-500">
-                            <span class="sr-only">Open main menu</span>
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 12h16m-7 6h7" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="md:hidden hidden" id="mobile-menu">
-                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-200">
+    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full z-0"></canvas>
+    
+    <nav class="bg-gray-800/70 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <span class="text-2xl font-bold text-sky-400">Ritesh Guleria</span>
+                <div class="hidden md:flex md:items-center md:space-x-4">
                     <a href="#summary"
-                        class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Summary</a>
+                        class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Summary</a>
                     <a href="#cyber-profile"
-                        class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Cyber Profile</a>
+                        class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Cyber Profile</a>
                     <a href="#education"
-                        class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Education</a>
+                        class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Education</a>
                     <a href="#skills"
-                        class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Skills</a>
+                        class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Skills</a>
                     <a href="#certifications"
-                        class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Certifications</a>
+                        class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Certifications</a>
                     <a href="#projects"
-                        class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Projects</a>
+                        class="text-gray-300 hover:text-sky-400 px-3 py-2 rounded-md text-sm font-medium">Projects</a>
+                </div>
+                
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-sky-400 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-sky-500">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
                 </div>
             </div>
-        </nav>
-
-        <main class="max-w-5xl mx-auto p-4 md:p-8 relative z-10">
-            <section id="summary" class="min-h-screen flex items-center justify-center text-center">
-                <div class="max-w-3xl">
-                    <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-white mb-4">Cybersecurity Professional
-                    </h1>
-                    <p class="text-lg md:text-xl text-gray-300 mb-8">
-                        A passionate and results-driven Computer Science student with a strong focus on cybersecurity,
-                        ethical hacking, and penetration testing. Committed to leveraging a foundational understanding of
-                        programming and networking to actively identify and mitigate system vulnerabilities.
-                    </p>
-                    <a href="https://linkedin.com/in/ritesh-guleria-a8a961288" target="_blank"
-                        class="inline-block bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition-colors">
-                        Connect on LinkedIn
-                    </a>
-                </div>
-            </section>
-            
-            <section id="cyber-profile" class="py-20 text-center min-h-screen flex flex-col justify-center">
-                <h2 class="text-3xl font-bold mb-8">Cyber Profile</h2>
-                <div class="flex flex-col items-center justify-center space-y-4">
-                    <p class="text-gray-300 mb-4">This badge showcases my active participation and achievements on TryHackMe.</p>
-                    <iframe src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=3684997" style='border:none; width: 100%; height: 120px;'></iframe>
-                </div>
-            </section>
-
-            <section id="education" class="py-20 min-h-screen flex flex-col justify-center">
-                <h2 class="text-3xl font-bold text-center mb-12">Education</h2>
-                <div class="border-l-2 border-sky-500 ml-4 md:ml-0 md:mx-auto md:w-1/2">
-                    <div class="mb-8 ml-8 relative">
-                        <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-gray-900"></div>
-                        <p class="text-gray-400">Oct 2024 - Present</p>
-                        <h3 class="text-xl font-semibold text-white">Minor in CSE and Advanced Technologies</h3>
-                        <p class="text-gray-300">Indian Institute of Technology, Mandi</p>
-                    </div>
-                    <div class="mb-8 ml-8 relative">
-                        <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-gray-900"></div>
-                        <p class="text-gray-400">Jul 2023 - Present</p>
-                        <h3 class="text-xl font-semibold text-white">Bachelor of Engineering - BE, Computer Science</h3>
-                        <p class="text-gray-300">Chitkara University</p>
-                    </div>
-                    <div class="mb-8 ml-8 relative">
-                        <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-gray-900"></div>
-                        <p class="text-gray-400">Mar 2023</p>
-                        <h3 class="text-xl font-semibold text-white">Higher Secondary, Science</h3>
-                        <p class="text-gray-300">Kendriya Vidyalaya</p>
-                    </div>
-                    <div class="mb-8 ml-8 relative">
-                        <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-gray-900"></div>
-                        <p class="text-gray-400">Mar 2021</p>
-                        <h3 class="text-xl font-semibold text-white">Secondary</h3>
-                        <p class="text-gray-300">Kendriya Vidyalaya</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="skills" class="py-20 bg-gray-800 rounded-lg shadow-lg min-h-screen flex flex-col justify-center">
-                <h2 class="text-3xl font-bold text-center mb-4">Technical Skills</h2>
-                <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">This chart provides a visual representation of
-                    my key technical skills. Hover over the points to see my self-assessed proficiency in each area,
-                    reflecting my current capabilities and areas of focus.</p>
-                <div class="chart-container">
-                    <canvas id="skillsChart"></canvas>
-                </div>
-            </section>
-
-            <section id="certifications" class="py-20 min-h-screen flex flex-col justify-center">
-                <h2 class="text-3xl font-bold text-center mb-12">Certifications</h2>
-                <div class="flex flex-col items-center justify-center space-y-8 md:space-y-0 md:flex-row md:space-x-8">
-                    <div class="flex flex-col items-center">
-                        <img id="cert1" src="1732526071313.jpg" alt="NPTEL Ethical Hacking Badge" class="w-50 h-40 rounded-lg cursor-pointer hover:shadow-lg transition-shadow">
-                        <p class="mt-2 text-gray-300 text-center">NPTEL Ethical Hacking</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <img id="cert2" src="1734109879735.jpg" alt="Google Cybersecurity Certificate Badge" class="w-50 h-40 rounded-lg cursor-pointer hover:shadow-lg transition-shadow">
-                        <p class="mt-2 text-gray-300 text-center">Google Cybersecurity Certificate</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="projects" class="py-20 min-h-screen flex flex-col justify-center">
-                <h2 class="text-3xl font-bold text-center mb-4">Projects</h2>
-                <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">Here are some of the projects I've worked on.
-                    They demonstrate my ability to apply my skills to real-world problems. Click on a project to see more
-                    details about the technologies used and the outcomes achieved.</p>
-                <div class="grid md:grid-cols-1 gap-8">
-                    <div
-                        class="bg-gray-800 rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all project-card">
-                        <h3 class="text-xl font-semibold mb-2">Aura: Voice Assistant</h3>
-                        <p class="text-gray-400">A voice assistant for desktop built with Python, currently in the
-                            development phase.</p>
-                        <div class="project-details hidden mt-4 pt-4 border-t border-gray-700">
-                            <ul class="list-disc list-inside space-y-2 text-gray-300">
-                                <li>Developed a voice assistant named Aura using Python.</li>
-                                <li>Engineered to perform basic PC tasks and open applications with voice commands.</li>
-                                <li>Currently in the development phase, focusing on expanding its command set and improving
-                                    voice recognition accuracy.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- <div
-                        class="bg-gray-800 rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all project-card">
-                        <h3 class="text-xl font-semibold mb-2">Web Vulnerability Scanner</h3>
-                        <p class="text-gray-400">A Python-based script to automate scanning for common web vulnerabilities.
-                        </p>
-                        <div class="project-details hidden mt-4 pt-4 border-t border-gray-700">
-                            <ul class="list-disc list-inside space-y-2 text-gray-300">
-                                <li>Developed a Python-based script to automate the scanning of websites for common security
-                                    vulnerabilities, including XSS and SQL injection.</li>
-                                <li>Utilized Python libraries like `requests` and `BeautifulSoup` to parse HTML and simulate
-                                    user inputs to test for potential flaws.</li>
-                                <li>Documented findings and provided remediation steps, demonstrating a complete
-                                    understanding of the vulnerability lifecycle.</li>
-                            </ul>
-                        </div>
-                    </div> -->
-                </div>
-            </section>
-
-        </main>
-        
-        <!-- The Modal -->
-        <div id="image-modal" class="modal">
-            <span class="close-button">&times;</span>
-            <img class="modal-content rounded-lg" id="modal-image" src="">
         </div>
-
-        <footer class="bg-gray-900 text-white py-8">
-            <div class="max-w-5xl mx-auto text-center">
-                <!-- <p>&copy; 2024 Ritesh Guleria. All Rights Reserved.</p> -->
-                <p class="text-gray-500 mt-2">Built with Tailwind CSS and Chart.js</p>
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#summary"
+                    class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Summary</a>
+                <a href="#cyber-profile"
+                    class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Cyber Profile</a>
+                <a href="#education"
+                    class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Education</a>
+                <a href="#skills"
+                    class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Skills</a>
+                <a href="#certifications"
+                    class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Certifications</a>
+                <a href="#projects"
+                    class="text-gray-300 hover:text-sky-400 block px-3 py-2 rounded-md text-base font-medium">Projects</a>
             </div>
-        </footer>
+        </div>
+    </nav>
 
-        <script>
-            // Background Particle Animation
-            const canvas = document.getElementById('bgCanvas');
-            const ctx = canvas.getContext('2d');
+    <main class="max-w-5xl mx-auto p-4 md:p-8 relative z-10">
+        <section id="summary" class="min-h-screen flex items-center justify-center text-center">
+            <div class="max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-white mb-4">Cybersecurity Professional
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 mb-8">
+                    A passionate and results-driven Computer Science student with a strong focus on cybersecurity,
+                    ethical hacking, and penetration testing. Committed to leveraging a foundational understanding of
+                    programming and networking to actively identify and mitigate system vulnerabilities.
+                </p>
+                <a href="https://linkedin.com/in/ritesh-guleria-a8a961288" target="_blank"
+                    class="inline-block bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition-colors">
+                    Connect on LinkedIn
+                </a>
+            </div>
+        </section>
+        
+        <section id="cyber-profile" class="py-20 text-center min-h-screen flex flex-col justify-center">
+            <h2 class="text-3xl font-bold mb-8">Cyber Profile</h2>
+            <div class="flex flex-col items-center justify-center space-y-4">
+                <p class="text-gray-300 mb-4">This badge showcases my active participation and achievements on TryHackMe.</p>
+                <div class="max-w-sm mx-auto w-full">
+                  <iframe src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=3684997" style='border:none; width: 100%; height: 120px;'></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section id="education" class="py-20 min-h-screen flex flex-col justify-center">
+            <h2 class="text-3xl font-bold text-center mb-12">Education</h2>
+            <div class="border-l-2 border-sky-500 ml-4 md:ml-0 md:mx-auto md:w-1/2">
+                <div class="mb-8 ml-8 relative">
+                    <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-gray-900"></div>
+                    <p class="text-gray-400">Oct 2024 - Present</p>
+                    <h3 class="text-xl font-semibold text-white">Minor in CSE and Advanced Technologies</h3>
+                    <p class="text-gray-300">Indian Institute of Technology, Mandi</p>
+                </div>
+                <div class="mb-8 ml-8 relative">
+                    <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-gray-900"></div>
+                    <p class="text-gray-400">Jul 2023 - Present</p>
+                    <h3 class="text-xl font-semibold text-white">Bachelor of Engineering - BE, Computer Science</h3>
+                    <p class="text-gray-300">Chitkara University</p>
+                </div>
+                <div class="mb-8 ml-8 relative">
+                    <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-gray-900"></div>
+                    <p class="text-gray-400">Mar 2023</p>
+                    <h3 class="text-xl font-semibold text-white">Higher Secondary, Science</h3>
+                    <p class="text-gray-300">Kendriya Vidyalaya</p>
+                </div>
+                <div class="mb-8 ml-8 relative">
+                    <div class="absolute -left-11 top-1 h-6 w-6 bg-sky-500 rounded-full border-4 border-gray-900"></div>
+                    <p class="text-gray-400">Mar 2021</p>
+                    <h3 class="text-xl font-semibold text-white">Secondary</h3>
+                    <p class="text-gray-300">Kendriya Vidyalaya</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-20 bg-gray-800 rounded-lg shadow-lg min-h-screen flex flex-col justify-center">
+            <h2 class="text-3xl font-bold text-center mb-4">Technical Skills</h2>
+            <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">This chart provides a visual representation of
+                my key technical skills. Hover over the points to see my self-assessed proficiency in each area,
+                reflecting my current capabilities and areas of focus.</p>
+            <div class="chart-container">
+                <canvas id="skillsChart"></canvas>
+            </div>
+        </section>
+
+        <section id="certifications" class="py-20 min-h-screen flex flex-col justify-center">
+            <h2 class="text-3xl font-bold text-center mb-12">Certifications</h2>
+            <div class="flex flex-col items-center justify-center space-y-8 md:space-y-0 md:flex-row md:space-x-8">
+                <div class="flex flex-col items-center">
+                    <img id="cert1" src="1732526071313.jpg" alt="NPTEL Ethical Hacking Badge" class="w-50 h-40 rounded-lg cursor-pointer hover:shadow-lg transition-shadow">
+                    <p class="mt-2 text-gray-300 text-center">NPTEL Ethical Hacking</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <img id="cert2" src="1734109879735.jpg" alt="Google Cybersecurity Certificate Badge" class="w-50 h-40 rounded-lg cursor-pointer hover:shadow-lg transition-shadow">
+                    <p class="mt-2 text-gray-300 text-center">Google Cybersecurity Certificate</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20 min-h-screen flex flex-col justify-center">
+            <h2 class="text-3xl font-bold text-center mb-4">Projects</h2>
+            <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">Here are some of the projects I've worked on.
+                They demonstrate my ability to apply my skills to real-world problems. Click on a project to see more
+                details about the technologies used and the outcomes achieved.</p>
+            <div class="grid md:grid-cols-1 gap-8">
+                <div
+                    class="bg-gray-800 rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all project-card">
+                    <h3 class="text-xl font-semibold mb-2">Aura: Voice Assistant</h3>
+                    <p class="text-gray-400">A voice assistant for desktop built with Python, currently in the
+                        development phase.</p>
+                    <div class="project-details hidden mt-4 pt-4 border-t border-gray-700">
+                        <ul class="list-disc list-inside space-y-2 text-gray-300">
+                            <li>Developed a voice assistant named Aura using Python.</li>
+                            <li>Engineered to perform basic PC tasks and open applications with voice commands.</li>
+                            <li>Currently in the development phase, focusing on expanding its command set and improving
+                                voice recognition accuracy.</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- <div
+                    class="bg-gray-800 rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all project-card">
+                    <h3 class="text-xl font-semibold mb-2">Web Vulnerability Scanner</h3>
+                    <p class="text-gray-400">A Python-based script to automate scanning for common web vulnerabilities.
+                    </p>
+                    <div class="project-details hidden mt-4 pt-4 border-t border-gray-700">
+                        <ul class="list-disc list-inside space-y-2 text-gray-300">
+                            <li>Developed a Python-based script to automate the scanning of websites for common security
+                                vulnerabilities, including XSS and SQL injection.</li>
+                            <li>Utilized Python libraries like `requests` and `BeautifulSoup` to parse HTML and simulate
+                                user inputs to test for potential flaws.</li>
+                            <li>Documented findings and provided remediation steps, demonstrating a complete
+                                understanding of the vulnerability lifecycle.</li>
+                        </ul>
+                    </div>
+                </div> -->
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- The Modal -->
+    <div id="image-modal" class="modal">
+        <span class="close-button">&times;</span>
+        <img class="modal-content rounded-lg" id="modal-image" src="">
+    </div>
+
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="max-w-5xl mx-auto text-center">
+<!--             <p>&copy; 2024 Ritesh Guleria. All Rights Reserved.</p> -->
+            <p class="text-gray-500 mt-2">Built with Tailwind CSS and Chart.js</p>
+        </div>
+    </footer>
+
+    <script>
+        // Background Particle Animation
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray;
+
+        window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            initParticles();
+        });
 
-            let particlesArray;
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
 
-            window.addEventListener('resize', () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                initParticles();
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            const numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                const size = (Math.random() * 5) + 1;
+                const x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                const y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                const directionX = (Math.random() * 0.5) - 0.25;
+                const directionY = (Math.random() * 0.5) - 0.25;
+                const color = 'rgba(59, 130, 246, 0.8)'; // Sky blue
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        function connectParticles() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    const distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
+                        ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = `rgba(59, 130, 246, ${opacityValue})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connectParticles();
+        }
+
+        // Project Cards Logic
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
             });
 
-            class Particle {
-                constructor(x, y, directionX, directionY, size, color) {
-                    this.x = x;
-                    this.y = y;
-                    this.directionX = directionX;
-                    this.directionY = directionY;
-                    this.size = size;
-                    this.color = color;
-                }
-
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                }
-
-                update() {
-                    if (this.x > canvas.width || this.x < 0) {
-                        this.directionX = -this.directionX;
+            const navLinks = document.querySelectorAll('#mobile-menu a, nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    if (link.getAttribute('href').startsWith('#')) {
+                        mobileMenu.classList.add('hidden');
                     }
-                    if (this.y > canvas.height || this.y < 0) {
-                        this.directionY = -this.directionY;
-                    }
-                    this.x += this.directionX;
-                    this.y += this.directionY;
-                    this.draw();
-                }
-            }
-
-            function initParticles() {
-                particlesArray = [];
-                const numberOfParticles = (canvas.height * canvas.width) / 9000;
-                for (let i = 0; i < numberOfParticles; i++) {
-                    const size = (Math.random() * 5) + 1;
-                    const x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-                    const y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                    const directionX = (Math.random() * 0.5) - 0.25;
-                    const directionY = (Math.random() * 0.5) - 0.25;
-                    const color = 'rgba(59, 130, 246, 0.8)'; // Sky blue
-                    particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
-                }
-            }
-
-            function connectParticles() {
-                let opacityValue = 1;
-                for (let a = 0; a < particlesArray.length; a++) {
-                    for (let b = a; b < particlesArray.length; b++) {
-                        const distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
-                            ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                        if (distance < (canvas.width / 7) * (canvas.height / 7)) {
-                            opacityValue = 1 - (distance / 20000);
-                            ctx.strokeStyle = `rgba(59, 130, 246, ${opacityValue})`;
-                            ctx.lineWidth = 1;
-                            ctx.beginPath();
-                            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            }
-
-            function animateParticles() {
-                requestAnimationFrame(animateParticles);
-                ctx.clearRect(0, 0, innerWidth, innerHeight);
-                for (let i = 0; i < particlesArray.length; i++) {
-                    particlesArray[i].update();
-                }
-                connectParticles();
-            }
-
-            // Project Cards Logic
-            document.addEventListener('DOMContentLoaded', function () {
-                const mobileMenuButton = document.getElementById('mobile-menu-button');
-                const mobileMenu = document.getElementById('mobile-menu');
-                mobileMenuButton.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('hidden');
                 });
+            });
 
-                const navLinks = document.querySelectorAll('#mobile-menu a, nav a');
-                navLinks.forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        if (link.getAttribute('href').startsWith('#')) {
-                            mobileMenu.classList.add('hidden');
-                        }
-                    });
+            const projectCards = document.querySelectorAll('.project-card');
+            projectCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const details = card.querySelector('.project-details');
+                    details.classList.toggle('hidden');
                 });
+            });
 
-                const projectCards = document.querySelectorAll('.project-card');
-                projectCards.forEach(card => {
-                    card.addEventListener('click', () => {
-                        const details = card.querySelector('.project-details');
-                        details.classList.toggle('hidden');
-                    });
+            // Certifications Modal Logic
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            const closeBtn = document.querySelector('.close-button');
+
+            const certImages = document.querySelectorAll('#certifications img');
+            certImages.forEach(img => {
+                img.addEventListener('click', () => {
+                    modal.style.display = "flex";
+                    modalImage.src = img.src;
                 });
+            });
 
-                // Certifications Modal Logic
-                const modal = document.getElementById('image-modal');
-                const modalImage = document.getElementById('modal-image');
-                const closeBtn = document.querySelector('.close-button');
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = "none";
+            });
 
-                const certImages = document.querySelectorAll('#certifications img');
-                certImages.forEach(img => {
-                    img.addEventListener('click', () => {
-                        modal.style.display = "flex";
-                        modalImage.src = img.src;
-                    });
-                });
-
-                closeBtn.addEventListener('click', () => {
+            window.addEventListener('click', (e) => {
+                if (e.target == modal) {
                     modal.style.display = "none";
-                });
+                }
+            });
 
-                window.addEventListener('click', (e) => {
-                    if (e.target == modal) {
-                        modal.style.display = "none";
-                    }
-                });
-
-                const ctx = document.getElementById('skillsChart').getContext('2d');
-                const skillsChart = new Chart(ctx, {
-                    type: 'radar',
-                    data: {
-                        labels: ['Penetration Testing', 'Ethical Hacking', 'Vulnerability Assessment', 'Kali Linux', 'Python', 'C/C++', 'Networking', 'OOP'],
-                        datasets: [{
-                            label: 'Proficiency',
-                            data: [8, 9, 8, 9, 7, 6, 8, 7],
-                            backgroundColor: 'rgba(56, 189, 248, 0.2)',
-                            borderColor: 'rgba(56, 189, 248, 1)',
-                            pointBackgroundColor: 'rgba(56, 189, 248, 1)',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgba(56, 189, 248, 1)'
-                        }]
-                    },
-                    options: {
-                        maintainAspectRatio: false,
-                        scales: {
-                            r: {
-                                angleLines: {
-                                    color: 'rgba(255, 255, 255, 0.1)'
-                                },
-                                grid: {
-                                    color: 'rgba(255, 255, 255, 0.1)'
-                                },
-                                pointLabels: {
-                                    font: {
-                                        size: 12,
-                                        weight: '500'
-                                    },
-                                    color: '#e2e8f0'
-                                },
-                                ticks: {
-                                    backdropColor: '#1a202c',
-                                    color: '#e2e8f0',
-                                    stepSize: 2,
-                                    beginAtZero: true,
-                                    max: 10
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            const skillsChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Penetration Testing', 'Ethical Hacking', 'Vulnerability Assessment', 'Kali Linux', 'Python', 'C/C++', 'Networking', 'OOP'],
+                    datasets: [{
+                        label: 'Proficiency',
+                        data: [8, 9, 8, 9, 7, 6, 8, 7],
+                        backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                        borderColor: 'rgba(56, 189, 248, 1)',
+                        pointBackgroundColor: 'rgba(56, 189, 248, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(56, 189, 248, 1)'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(255, 255, 255, 0.1)'
                             },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        return `${context.dataset.label}: ${context.raw}/10`;
-                                    }
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                },
+                                color: '#e2e8f0'
+                            },
+                            ticks: {
+                                backdropColor: '#1a202c',
+                                color: '#e2e8f0',
+                                stepSize: 2,
+                                beginAtZero: true,
+                                max: 10
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `${context.dataset.label}: ${context.raw}/10`;
                                 }
                             }
                         }
                     }
-                });
-                
-                initParticles();
-                animateParticles();
+                }
             });
-        </script>
+            
+            initParticles();
+            animateParticles();
+        });
+    </script>
 
-    </body>
+</body>
 
-    </html>
+</html>
