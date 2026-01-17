@@ -1,29 +1,45 @@
-# Ritesh Guleria's Interactive Resume
-A modern and dynamic single-page web application designed to showcase my skills and projects as a cybersecurity professional. This interactive resume provides an intuitive user experience with a clean layout and subtle animations.
+# <Ritesh Guleria /> - Cybersecurity Portfolio
 
-## Key Features
-• Interactive Skills Chart: A radar chart that visually represents my technical proficiencies.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcybergeek-007%2Fyour-repo-name)
+![Profile Views](https://komarev.com/ghpvc/?username=cybergeek-007&color=00ff41)
+![Tech Stack](https://img.shields.io/badge/Tech-HTML5_%7C_Tailwind_CSS_%7C_JS-00d9ff)
+![Focus](https://img.shields.io/badge/Focus-Penetration_Testing_%26_Ethical_Hacking-ff3864)
 
-• Live Cyber Profile: A dynamic TryHackMe badge that instantly validates hands-on skills.
+> "Securing the Digital Frontier through Proactive Defense & Ethical Hacking"
 
-• Interactive Certifications: Clickable badges that pop out for a detailed view of my professional certifications.
+A responsive, single-page personal portfolio website designed for a Cybersecurity Specialist and Penetration Tester. This site showcases skills, certifications, technical projects, and a structured methodology for security assessments.
 
-• Clean, Responsive Layout: A professional and organized design that adapts seamlessly to desktop, tablet, and mobile screens.
+## 🚀 Live Demo
 
-• Dynamic Background: An animated particle network adds a futuristic, eye-catching touch.
+[**Click here to view the live site**](https://riteshguleriacv.vercel.app/)
 
-• Expandable Projects: Projects are presented in an easy-to-read format that can be expanded with a click for more details.
+## ✨ Features
 
-## Technologies Used
-• HTML: For the core document structure.
+* **Cyberpunk/Terminal Aesthetic:** Dark mode design with neon accents (`#00ff41` Green, `#00d9ff` Blue, `#ff3864` Red).
+* **Responsive Design:** Fully fluid layout using Tailwind CSS that works on mobile and desktop.
+* **Interactive UI:** Smooth scrolling, fade-in animations, and hover effects on project cards.
+* **Structured Sections:**
+    * **Hero:** Impactful introduction with social links.
+    * **Skills:** Categorized into Web Security, Network Security, API Security, and Tools.
+    * **Projects:** Dynamic grid layout showcasing case studies (Port Scanner, Keylogger, etc.).
+    * **Methodology:** A 6-step breakdown of the penetration testing lifecycle.
+    * **Contact:** Functional contact form integrated with Formspree.
 
-• Tailwind CSS: For efficient and responsive styling.
+## 🛠️ Tech Stack
 
-• Chart.js: To create the interactive data visualization for the skills section.
+* **Frontend:** HTML5, Vanilla JavaScript.
+* **Styling:** [Tailwind CSS](https://tailwindcss.com/) (via CDN).
+* **Fonts:** 'Inter' (Body) and 'JetBrains Mono' (Code/Headings) via Google Fonts.
+* **Icons:** SVG Icons.
 
-• JavaScript: To handle all interactive elements, including navigation, animations, and modals.
+## ⚙️ Installation & Setup
 
-## How to View
-To view this resume, simply open the index.html file in your web browser. For the best experience, visit the live version at:
+Since this is a static site using the Tailwind CDN, no build process or Node.js installation is required for local development.
 
-→ https://riteshguleriacv.vercel.app/
+### 1. Local Development
+Simply clone the repository and open `index.html` in your browser.
+
+```bash
+git clone https://github.com/cybergeek-007/ritesh-guleria-cv.git
+cd ritesh-guleria-cv
+# Open index.html in Chrome, Firefox, or Edge
