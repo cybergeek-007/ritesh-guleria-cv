@@ -40,6 +40,6 @@ Since this is a static site using the Tailwind CDN, no build process or Node.js 
 Simply clone the repository and open `index.html` in your browser.
 
 ```bash
-git clone https://github.com/cybergeek-007/ritesh-guleria-cv.git
-cd ritesh-guleria-cv
+git clone https://github.com/cybergeek-007/cybersecurity-portfolio.git
+cd cybersecurity-portfolio
 # Open index.html in Chrome, Firefox, or Edge
