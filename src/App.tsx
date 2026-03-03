@@ -261,7 +261,7 @@ function HeroSection() {
             {[
               { href: 'https://github.com/cybergeek-007', icon: Github, color: 'hover:text-[#00ff41]' },
               { href: 'https://www.linkedin.com/in/riteshguleria007', icon: Linkedin, color: 'hover:text-[#00d9ff]' },
-              { href: 'mailto:guleriaritesh2@gmail.com', icon: Mail, color: 'hover:text-[#ff3864]' },
+              { href: 'mailto:ritesh127.0.0.1@gmail.com', icon: Mail, color: 'hover:text-[#ff3864]' },
             ].map((social, index) => (
               <motion.a
                 key={index}
@@ -1232,7 +1232,7 @@ function ContactSection() {
               viewport={{ once: true }}
             >
               {[
-                { icon: Mail, label: 'Email', value: 'guleriaritesh2@gmail.com', href: 'mailto:guleriaritesh2@gmail.com', color: '#00ff41' },
+                { icon: Mail, label: 'Email', value: 'ritesh127.0.0.1@gmail.com', href: 'mailto:ritesh127.0.0.1@gmail.com', color: '#00ff41' },
                 { icon: Linkedin, label: 'LinkedIn', value: 'linkedin.com/in/riteshguleria007', href: 'https://www.linkedin.com/in/riteshguleria007', color: '#00d9ff' },
                 { icon: Github, label: 'GitHub', value: 'github.com/cybergeek-007', href: 'https://github.com/cybergeek-007', color: '#ff3864' }
               ].map((contact, index) => (
@@ -1359,7 +1359,7 @@ function Footer() {
           </div>
 
           <div className="flex space-x-5 sm:space-x-6">
-            {[{ href: 'https://github.com/cybergeek-007', icon: Github, color: 'hover:text-[#00ff41]' }, { href: 'https://www.linkedin.com/in/riteshguleria007', icon: Linkedin, color: 'hover:text-[#00d9ff]' }, { href: 'mailto:guleriaritesh2@gmail.com', icon: Mail, color: 'hover:text-[#ff3864]' }].map((social, index) => (
+            {[{ href: 'https://github.com/cybergeek-007', icon: Github, color: 'hover:text-[#00ff41]' }, { href: 'https://www.linkedin.com/in/riteshguleria007', icon: Linkedin, color: 'hover:text-[#00d9ff]' }, { href: 'mailto:ritesh127.0.0.1@gmail.com', icon: Mail, color: 'hover:text-[#ff3864]' }].map((social, index) => (
               <motion.a key={index} href={social.href} target={social.href.startsWith('mailto') ? undefined : '_blank'} rel={social.href.startsWith('mailto') ? undefined : 'noopener noreferrer'} className={`text-gray-500 ${social.color} transition-colors`} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}>
                 <social.icon className="w-5 h-5 sm:w-6 sm:h-6" />
               </motion.a>
