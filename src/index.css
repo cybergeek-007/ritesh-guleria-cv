@@ -120,8 +120,8 @@ body {
 /* Animated Grid Background */
 .animated-grid {
   background-image: 
-    linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(0, 255, 65, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 65, 0.09) 1px, transparent 1px);
   background-size: 50px 50px;
   animation: gridMove 20s linear infinite;
 }
@@ -246,12 +246,11 @@ body {
   50% { opacity: 0.5; transform: scale(1.2); }
 }
 
-/* THM Badge Container */
-.thm-badge-container {
-  background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
-  border: 1px solid rgba(0, 255, 65, 0.3);
-  border-radius: 12px;
-  overflow: hidden;
+/* THM Badge Link */
+.thm-badge-link {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  text-decoration: none;
 }
 
 /* Responsive adjustments */

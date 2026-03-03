@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { 
   Github, Linkedin, Mail, ExternalLink, Terminal, Shield, 
   Code, Cpu, Globe, Lock, Server, Zap, Award, Calendar,
-  MapPin, Users, Trophy, Target, ChevronDown, Menu, X,
-  Bug, FileCode, Network, Send, GraduationCap, BookOpen
+  MapPin, Trophy, Target, ChevronDown, Menu, X,
+  Bug, FileCode, Network, Send, GraduationCap, BookOpen, Download
 } from 'lucide-react';
 
 // Animation variants
@@ -24,6 +24,17 @@ const staggerContainer = {
     transition: { staggerChildren: 0.1, delayChildren: 0.2 }
   }
 };
+
+// Pre-generated random data for hero particles (module-level to avoid React purity warnings)
+const heroParticles = [...Array(40)].map((_, i) => ({
+  id: i,
+  x: Math.random() * 100,
+  size: Math.random() * 3 + 1,
+  duration: Math.random() * 4 + 3,
+  delay: Math.random() * 3,
+  color: ['#00ff41', '#00d9ff', '#ff3864', '#00ff41', '#00ff41'][Math.floor(Math.random() * 5)],
+  opacity: Math.random() * 0.5 + 0.1,
+}));
 
 // Navigation Component
 function Navigation() {
@@ -112,33 +123,38 @@ function Navigation() {
       </div>
 
       {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="xl:hidden bg-black/95 border-t border-gray-800 max-h-[80vh] overflow-y-auto"
-          >
-            <div className="px-4 py-4 space-y-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-4 py-3 rounded-lg transition-colors ${
-                    activeSection === link.href.slice(1)
-                      ? 'bg-[#00ff41]/10 text-[#00ff41]'
-                      : 'text-gray-400 hover:bg-gray-900 hover:text-[#00ff41]'
-                  }`}
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isOpen && (
+        <div className="xl:hidden bg-black/95 border-t border-gray-800 max-h-[80vh] overflow-y-auto">
+          <div className="px-4 py-4 space-y-1">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const id = link.href.slice(1);
+                  setIsOpen(false);
+                  setTimeout(() => {
+                    const target = document.getElementById(id);
+                    if (target) {
+                      const offset = 16;
+                      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+                      window.scrollTo({ top, behavior: 'smooth' });
+                    }
+                  }, 100);
+                }}
+                className={`block px-4 py-3 rounded-lg transition-colors text-base ${
+                  activeSection === link.href.slice(1)
+                    ? 'bg-[#00ff41]/10 text-[#00ff41]'
+                    : 'text-gray-400 hover:bg-gray-900 hover:text-[#00ff41]'
+                }`}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </motion.nav>
   );
 }
@@ -163,16 +179,31 @@ function HeroSection() {
 
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16 px-4">
-      <div className="absolute inset-0 animated-grid opacity-30" />
+      <div className="absolute inset-0 animated-grid opacity-60" />
       
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(15)].map((_, i) => (
+        {heroParticles.map((p) => (
           <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-[#00ff41]/30 rounded-full"
-            initial={{ x: Math.random() * 1000, y: Math.random() * 800 }}
-            animate={{ y: [null, -20, 20], opacity: [0.3, 0.8, 0.3] }}
-            transition={{ duration: 3 + Math.random() * 2, repeat: Infinity, delay: Math.random() * 2 }}
+            key={p.id}
+            className="absolute rounded-full"
+            style={{
+              left: `${p.x}%`,
+              width: p.size,
+              height: p.size,
+              backgroundColor: p.color,
+              boxShadow: `0 0 ${p.size * 3}px ${p.color}`,
+            }}
+            initial={{ top: '-5%', opacity: 0 }}
+            animate={{
+              top: ['-5%', '105%'],
+              opacity: [0, p.opacity + 0.3, p.opacity + 0.3, 0],
+            }}
+            transition={{
+              duration: p.duration,
+              repeat: Infinity,
+              delay: p.delay,
+              ease: 'linear',
+            }}
           />
         ))}
       </div>
@@ -213,6 +244,16 @@ function HeroSection() {
             >
               <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
               Contact Me
+            </motion.a>
+            <motion.a 
+              href="/resume.pdf"
+              download
+              className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 border-2 border-[#ff3864] text-[#ff3864] font-semibold rounded-lg hover:bg-[#ff3864] hover:text-black transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
+              whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(255, 56, 100, 0.3)' }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+              Download Resume
             </motion.a>
           </motion.div>
 
@@ -288,25 +329,30 @@ function AboutSection() {
               I actively engage with platforms like TryHackMe to sharpen my skills.
             </p>
 
-            {/* Enlarged TryHackMe Badge */}
+            {/* TryHackMe Badge - Inline compact */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="thm-badge-container p-4 sm:p-6 mb-6 sm:mb-8"
+              className="mb-6 sm:mb-8"
             >
-              <div className="flex items-center gap-3 mb-4">
-                <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-[#00ff41]" />
-                <span className="text-sm sm:text-base font-mono text-gray-400">TryHackMe Profile</span>
-              </div>
-              <div className="w-full overflow-hidden rounded-lg">
-                <iframe 
-                  src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=3684997" 
-                  className="w-full"
-                  style={{ border: 'none', minHeight: '220px', height: 'auto' }}
-                  title="TryHackMe Badge"
-                />
+              <div className="relative inline-block cursor-pointer group">
+                <a
+                  href="https://tryhackme.com/r/p/1mth3prieSt"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="thm-badge-link flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3 sm:py-4 rounded-xl border border-gray-700/60 bg-gradient-to-r from-[#1a1a2e]/80 to-[#0d0d0d]/80 hover:border-[#00ff41]/50 transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(0,255,65,0.1)]"
+                >
+                  <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-[#00ff41]/10 flex items-center justify-center border border-[#00ff41]/20">
+                    <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-[#00ff41]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm sm:text-base font-semibold text-gray-200 group-hover:text-white transition-colors">TryHackMe Profile</span>
+                    <span className="text-xs sm:text-sm font-mono text-gray-500 group-hover:text-[#00ff41]/70 transition-colors">@1mth3prieSt · Top 1% · 5988 pts</span>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-gray-600 group-hover:text-[#00ff41] transition-colors ml-2 flex-shrink-0" />
+                </a>
               </div>
             </motion.div>
 
@@ -412,48 +458,50 @@ function SkillsSection() {
 function ProjectsSection() {
   const projects = [
     {
-      title: 'Advanced Multi-Threaded Port Scanner',
+      title: 'PhishGuard',
       type: 'Security Tool',
       typeColor: '#00ff41',
-      description: 'A robust, high-performance network reconnaissance tool developed in Python for rapid port discovery and service identification.',
-      objective: 'Create a custom alternative to standard scanners with specific optimizations for low-bandwidth environments.',
-      methodology: ['Multi-threading implementation for concurrency', 'Banner grabbing for service version detection', 'Socket programming and error handling'],
-      tools: ['Python 3.x', 'Socket Library', 'Threading'],
-      outcome: 'Developed a portable script capable of scanning 1000 ports in under 5 seconds with detailed output formatting.',
-      githubUrl: 'https://github.com/cybergeek-007/port-scanner'
+      description: 'An email security analysis platform that automates SOC-level forensic investigations. Analyzes SPF, DKIM, DMARC, relay paths, IP reputation, URLs, phishing heuristics, and domain age.',
+      objective: 'Automate email threat analysis to generate real-time threat scores and detect phishing in seconds.',
+      methodology: ['SPF, DKIM, DMARC validation', 'IP reputation and relay path analysis', 'URL and phishing heuristic scoring', 'Domain age verification'],
+      tools: ['Python', 'Streamlit', 'Email Forensics'],
+      outcome: 'Built a platform that generates real-time threat scores and detects phishing emails in seconds.',
+      githubUrl: 'https://github.com/cybergeek-007/PhishGuard',
+      liveUrl: 'https://phisshguard.streamlit.app/'
     },
     {
-      title: 'Educational Keylogger & Monitor',
-      type: 'Research',
-      typeColor: '#ff8c00',
-      description: 'A proof-of-concept system monitoring tool designed for behavioral analysis and educational security awareness.',
-      objective: 'Demonstrate the risks of social engineering and the importance of endpoint protection systems.',
-      methodology: ['Event hooking for keyboard input capture', 'Secure local logging and remote delivery simulation', 'Stealth technique research for AV evasion'],
-      tools: ['Python', 'Pynput', 'Logging API'],
-      outcome: 'Successfully modeled data exfiltration paths and provided documentation on mitigating such threats using EDR/AV solutions.',
-      githubUrl: 'https://github.com/cybergeek-007/keylogger-monitor'
-    },
-    {
-      title: 'Web Vulnerability Scanner',
+      title: 'ManifestGuard',
       type: 'Security Tool',
       typeColor: '#00d9ff',
-      description: 'An automated web application security scanner that detects common vulnerabilities in web applications.',
-      objective: 'Build a tool to identify OWASP Top 10 vulnerabilities in web applications efficiently.',
-      methodology: ['Automated crawling and endpoint discovery', 'Payload injection for vulnerability detection', 'Comprehensive reporting with remediation steps'],
-      tools: ['Python', 'Requests', 'BeautifulSoup', 'Selenium'],
-      outcome: 'Successfully identified vulnerabilities in test applications with 85% accuracy and detailed remediation reports.',
-      githubUrl: 'https://github.com/cybergeek-007/web-vuln-scanner'
+      description: 'Local Chrome extension scanner with AI risk analysis. Automatically detects permissions and translates technical jargon into security insights.',
+      objective: 'Help users understand the security risks of their installed browser extensions.',
+      methodology: ['Chrome extension manifest parsing', 'Permission risk scoring', 'AI-powered risk analysis', 'Security insight generation'],
+      tools: ['Python', 'Streamlit', 'AI/ML'],
+      outcome: 'Deployed a scanner that audits Chrome extensions and presents clear security risk breakdowns.',
+      githubUrl: 'https://github.com/cybergeek-007/ManifestGuard',
+      liveUrl: 'https://manifestguard.streamlit.app/'
     },
     {
-      title: 'Password Strength Analyzer',
+      title: 'PulseWatch',
+      type: 'Full-Stack',
+      typeColor: '#ff8c00',
+      description: 'API Monitoring SaaS built with React, Node.js, PostgreSQL (TimescaleDB), and Redis. Monitor APIs, track uptime & response times, and manage alerts.',
+      objective: 'Build a production-grade SaaS for real-time API health monitoring with secure JWT auth.',
+      methodology: ['JWT-based authentication system', 'TimescaleDB for time-series metrics', 'Redis caching for performance', 'Real-time uptime & latency tracking'],
+      tools: ['TypeScript', 'React', 'Node.js', 'PostgreSQL', 'Redis'],
+      outcome: 'Developed a full monitoring dashboard with alerting, uptime tracking, and response time analytics.',
+      githubUrl: 'https://github.com/cybergeek-007/PulseWatch'
+    },
+    {
+      title: 'LogisTech',
       type: 'Utility',
       typeColor: '#ff3864',
-      description: 'A comprehensive password analysis tool that evaluates password strength against various attack vectors.',
-      objective: 'Create an educational tool to demonstrate password security best practices.',
-      methodology: ['Entropy calculation and pattern analysis', 'Dictionary attack simulation', 'Brute-force time estimation'],
-      tools: ['Python', 'Hashlib', 'Regex', 'Wordlists'],
-      outcome: 'Built a tool that helps users understand password vulnerabilities and create stronger passwords.',
-      githubUrl: 'https://github.com/cybergeek-007/password-analyzer'
+      description: 'An automated warehouse management system built in Python for streamlining logistics operations.',
+      objective: 'Automate warehouse inventory tracking and logistics workflows.',
+      methodology: ['Inventory management automation', 'Warehouse workflow optimization', 'Python scripting for logistics'],
+      tools: ['Python'],
+      outcome: 'Built an automated system for warehouse operations management.',
+      githubUrl: 'https://github.com/cybergeek-007/LogisTech'
     }
   ];
 
@@ -554,10 +602,21 @@ function ProjectsSection() {
                 <p className="text-xs sm:text-sm text-gray-400">{project.outcome}</p>
               </div>
 
-              <div className="mt-3 sm:mt-4 flex items-center gap-2 text-[#00ff41] opacity-0 group-hover:opacity-100 transition-opacity">
-                <Github className="w-4 h-4" />
-                <span className="text-xs sm:text-sm font-mono">View on GitHub</span>
-                <ExternalLink className="w-4 h-4" />
+              <div className="mt-3 sm:mt-4 flex items-center gap-4">
+                <div className="flex items-center gap-2 text-[#00ff41] opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Github className="w-4 h-4" />
+                  <span className="text-xs sm:text-sm font-mono">View on GitHub</span>
+                  <ExternalLink className="w-4 h-4" />
+                </div>
+                {'liveUrl' in project && (project as { liveUrl?: string }).liveUrl && (
+                  <span
+                    onClick={(e) => { e.preventDefault(); window.open((project as { liveUrl?: string }).liveUrl, '_blank'); }}
+                    className="flex items-center gap-1.5 text-[#00d9ff] opacity-0 group-hover:opacity-100 transition-opacity text-xs sm:text-sm font-mono hover:underline"
+                  >
+                    <Globe className="w-4 h-4" />
+                    Live Demo
+                  </span>
+                )}
               </div>
             </motion.a>
           ))}
@@ -576,7 +635,7 @@ function ProjectsSection() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
             {[
-              { value: '250+', label: 'TryHackMe Rooms Completed', color: '#00ff41' },
+              { value: '300+', label: 'TryHackMe Rooms Completed', color: '#00ff41' },
               { value: 'Top 1%', label: 'Globally On TryHackMe', color: '#00d9ff' },
               { value: '10+', label: 'Custom Lab Environments', color: '#ff3864' }
             ].map((stat, index) => (
@@ -601,42 +660,42 @@ function HackathonsSection() {
   const hackathons = [
     {
       name: 'SIH - Smart India Hackathon',
-      role: 'Participant',
+      role: 'Internal Finalist',
       date: '2024',
-      location: 'India',
-      description: 'Participated in India&apos;s largest hackathon, working on innovative solutions for real-world problems under the Ministry of Education.',
-      achievements: ['Developed a cybersecurity awareness platform', 'Implemented gamified learning modules', 'Top 50 finalist among 500+ teams'],
+      location: 'Chitkara University',
+      description: 'Won the internal round of India&apos;s largest hackathon. Our problem statement was to promote heritage and cultural sites in India, for which we built a web app showcasing hidden treasures across the country.',
+      achievements: ['Won internal college-level hackathon round', 'Developed a web app showcasing hidden heritage & cultural sites across India', 'Integrated location-based recommendations for nearby sites'],
       technologies: ['React', 'Node.js', 'MongoDB', 'Express'],
       status: 'completed'
     },
     {
-      name: 'HackTheBox CTF',
+      name: 'Winja CTF | Nullcon Goa 2026',
       role: 'Competitor',
-      date: '2024',
-      location: 'Online',
-      description: 'Competed in various Capture The Flag competitions on HackTheBox platform, solving complex security challenges.',
-      achievements: ['Solved 50+ machines across different difficulty levels', 'Ranked in top 5% globally', 'Specialized in web and binary exploitation'],
-      technologies: ['Python', 'Burp Suite', 'Ghidra', 'Pwntools'],
-      status: 'ongoing'
+      date: 'March 2026',
+      location: 'Hybrid - Goa, India',
+      description: 'Competed in the Winja CTF at Nullcon Goa 2026, a premier Jeopardy-style Capture The Flag event organized by India&apos;s largest security conference with 63 participating teams.',
+      achievements: ['Solved challenges across web exploitation, forensics, and cryptography', 'Competed against 63 teams in a hybrid CTF format', 'Networked with top security researchers at Nullcon'],
+      technologies: ['Burp Suite', 'Python', 'Web Exploitation', 'Cryptography'],
+      status: 'completed'
     },
     {
-      name: 'TryHackMe Advent of Cyber',
+      name: 'TryHackMe Advent of Cyber 2025',
       role: 'Participant',
-      date: '2024',
+      date: 'December 2025',
       location: 'Online',
-      description: 'Completed the annual Advent of Cyber event, solving daily security challenges throughout December.',
-      achievements: ['Completed all 25 days of challenges', 'Learned about emerging threats and attack vectors', 'Earned exclusive badges and certificates'],
+      description: 'Completed the annual Advent of Cyber 2025 event on TryHackMe, tackling 25 daily security challenges throughout December covering a wide range of cybersecurity domains.',
+      achievements: ['Completed all 25 days of challenges', 'Covered topics from log analysis to malware RE and cloud security', 'Earned exclusive Advent of Cyber 2025 badge and certificate'],
       technologies: ['Linux', 'Web Exploitation', 'Forensics', 'Cryptography'],
       status: 'completed'
     },
     {
-      name: 'DVWA Security Challenge',
-      role: 'Security Researcher',
-      date: '2024',
-      location: 'Personal Lab',
-      description: 'Conducted comprehensive security assessment on Damn Vulnerable Web Application to practice penetration testing methodologies.',
-      achievements: ['Identified and exploited all vulnerability categories', 'Documented detailed remediation strategies', 'Created educational content for beginners'],
-      technologies: ['SQLMap', 'Burp Suite', 'XSS Payloads', 'Command Injection'],
+      name: 'CodeVinci CTF 2026',
+      role: 'Competitor',
+      date: 'March 2026',
+      location: 'Online',
+      description: 'Participated in CodeVinci CTF 2026, a fast-paced 5-hour online Jeopardy-style CTF with 69+ teams competing across multiple security challenge categories.',
+      achievements: ['Competed in a high-intensity 5-hour CTF sprint', 'Solved challenges in web, reverse engineering, and OSINT', 'Competed against 69+ teams from around the world'],
+      technologies: ['Python', 'Ghidra', 'Wireshark', 'OSINT Tools'],
       status: 'completed'
     }
   ];
@@ -730,30 +789,6 @@ function HackathonsSection() {
           ))}
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-8 sm:mt-12 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
-        >
-          {[
-            { icon: Trophy, value: '4+', label: 'Hackathons', color: '#00ff41' },
-            { icon: Target, value: '50+', label: 'CTF Challenges', color: '#00d9ff' },
-            { icon: Users, value: 'Top 5%', label: 'Global Ranking', color: '#ff3864' },
-            { icon: Award, value: '10+', label: 'Certificates', color: '#ff8c00' }
-          ].map((stat, index) => (
-            <motion.div
-              key={index}
-              className="bg-[#1a1a1a] border border-gray-800 rounded-xl p-3 sm:p-4 text-center"
-              whileHover={{ scale: 1.05, borderColor: stat.color }}
-            >
-              <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1 sm:mb-2" style={{ color: stat.color }} />
-              <div className="text-xl sm:text-2xl font-bold" style={{ color: stat.color }}>{stat.value}</div>
-              <div className="text-xs text-gray-400">{stat.label}</div>
-            </motion.div>
-          ))}
-        </motion.div>
       </div>
     </section>
   );
@@ -781,14 +816,14 @@ function EducationSection() {
   ];
 
   return (
-    <section id="education" className="py-16 sm:py-20 lg:py-24 bg-[#111111]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="education" className="min-h-screen flex flex-col justify-center py-20 sm:py-24 lg:py-32 bg-[#111111]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10 sm:mb-16"
+          className="text-center mb-12 sm:mb-20"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
             <span className="text-[#00d9ff]">//</span> Education
@@ -798,7 +833,7 @@ function EducationSection() {
 
         <div className="max-w-4xl mx-auto">
           <motion.div 
-            className="space-y-4 sm:space-y-6"
+            className="space-y-6 sm:space-y-8"
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -809,25 +844,25 @@ function EducationSection() {
                 key={index}
                 variants={fadeInUp}
                 whileHover={{ x: 5, transition: { duration: 0.2 } }}
-                className="bg-[#1a1a1a] border border-gray-800 rounded-xl p-5 sm:p-6 hover:border-opacity-50 transition-all"
+                className="bg-[#1a1a1a] border border-gray-800 rounded-xl p-6 sm:p-8 hover:border-opacity-50 transition-all"
               >
-                <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                   <div 
-                    className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center flex-shrink-0"
+                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ backgroundColor: `${edu.color}15` }}
                   >
-                    <edu.icon className="w-6 h-6 sm:w-7 sm:h-7" style={{ color: edu.color }} />
+                    <edu.icon className="w-7 h-7 sm:w-8 sm:h-8" style={{ color: edu.color }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 mb-2">
-                      <h3 className="text-lg sm:text-xl font-bold text-white">{edu.title}</h3>
-                      <span className="text-xs sm:text-sm font-mono text-gray-400 flex items-center gap-1">
-                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 mb-3">
+                      <h3 className="text-xl sm:text-2xl font-bold text-white">{edu.title}</h3>
+                      <span className="text-sm font-mono text-gray-400 flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
                         {edu.period}
                       </span>
                     </div>
-                    <p className="text-sm sm:text-base text-[#00d9ff] font-medium mb-2">{edu.institution}</p>
-                    <p className="text-sm text-gray-400">{edu.description}</p>
+                    <p className="text-base sm:text-lg text-[#00d9ff] font-medium mb-3">{edu.institution}</p>
+                    <p className="text-sm sm:text-base text-gray-400 leading-relaxed">{edu.description}</p>
                   </div>
                 </div>
               </motion.div>
@@ -857,6 +892,22 @@ function CertificationsSection() {
       type: 'Verified',
       typeColor: '#00d9ff',
       icon: Shield
+    },
+    {
+      title: 'Ethical Hacking Certificate',
+      issuer: 'NPTEL',
+      year: '2024',
+      type: 'Verified',
+      typeColor: '#ffd700',
+      icon: Shield
+    },
+    {
+      title: 'Microsoft Azure Cloud Fundamentals',
+      issuer: 'Wipro COE CRS Track',
+      year: '2026',
+      type: 'Verified',
+      typeColor: '#00d9ff',
+      icon: Globe
     }
   ];
 
@@ -1065,15 +1116,90 @@ function ContactSection() {
   const [formState, setFormState] = useState({ name: '', email: '', subject: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [formError, setFormError] = useState('');
+
+  // Allowed email domains
+  const allowedDomains = [
+    'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'live.com',
+    'protonmail.com', 'proton.me', 'icloud.com', 'me.com', 'aol.com',
+    'zoho.com', 'mail.com', 'gmx.com', 'yandex.com', 'tutanota.com',
+    'edu', 'ac.in', 'org', 'gov', 'gov.in'
+  ];
+
+  const validateEmail = (email: string): boolean => {
+    const trimmed = email.trim().toLowerCase();
+    // RFC-style regex
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+    if (!emailRegex.test(trimmed)) return false;
+    const domain = trimmed.split('@')[1];
+    return allowedDomains.some(d => domain === d || domain.endsWith('.' + d));
+  };
+
+  // Rate limit: max 3 submissions per email per 10 minutes
+  const checkRateLimit = (email: string): boolean => {
+    const key = `contact_rl_${email.trim().toLowerCase()}`;
+    const now = Date.now();
+    const windowMs = 10 * 60 * 1000; // 10 minutes
+    const maxAttempts = 3;
+    try {
+      const stored = JSON.parse(localStorage.getItem(key) || '[]') as number[];
+      const recent = stored.filter((t) => now - t < windowMs);
+      if (recent.length >= maxAttempts) return false;
+      recent.push(now);
+      localStorage.setItem(key, JSON.stringify(recent));
+      return true;
+    } catch {
+      return true;
+    }
+  };
+
+  const sanitize = (str: string) => str.replace(/[<>]/g, '').trim();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError('');
+
+    // Validate all fields are non-empty after trimming
+    if (!formState.name.trim() || !formState.subject.trim() || !formState.message.trim()) {
+      setFormError('All fields are required.');
+      return;
+    }
+
+    // Email validation
+    if (!validateEmail(formState.email)) {
+      setFormError('Please enter a valid email from a recognized provider.');
+      return;
+    }
+
+    // Rate limit check
+    if (!checkRateLimit(formState.email)) {
+      setFormError('Too many submissions. Please try again in 10 minutes.');
+      return;
+    }
+
     setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const res = await fetch('https://formspree.io/f/xaqqqddq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: sanitize(formState.name),
+          email: formState.email.trim().toLowerCase(),
+          subject: sanitize(formState.subject),
+          message: sanitize(formState.message),
+        }),
+      });
+      if (res.ok) {
+        setSubmitted(true);
+        setFormState({ name: '', email: '', subject: '', message: '' });
+        setTimeout(() => setSubmitted(false), 3000);
+      } else {
+        setFormError('Failed to send. Please try again later.');
+      }
+    } catch {
+      setFormError('Network error. Please check your connection.');
+    }
     setIsSubmitting(false);
-    setSubmitted(true);
-    setFormState({ name: '', email: '', subject: '', message: '' });
-    setTimeout(() => setSubmitted(false), 3000);
   };
 
   return (
@@ -1186,6 +1312,11 @@ function ContactSection() {
                     placeholder="Your message..."
                   />
                 </div>
+                {formError && (
+                  <p className="text-[#ff3864] text-xs sm:text-sm font-mono bg-[#ff3864]/10 border border-[#ff3864]/30 rounded-lg px-3 py-2">
+                    ⚠ {formError}
+                  </p>
+                )}
                 <motion.button
                   type="submit"
                   disabled={isSubmitting}
