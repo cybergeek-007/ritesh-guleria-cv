@@ -345,7 +345,7 @@ function AboutSection() {
                   loading="lazy"
                 />
                 <a
-                  href="https://tryhackme.com/r/p/1mth3prieSt"
+                  href="https://tryhackme.com/p/1mth3prie5t"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="absolute inset-0 z-10"
