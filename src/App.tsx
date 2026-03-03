@@ -337,22 +337,20 @@ function AboutSection() {
               transition={{ duration: 0.5, delay: 0.4 }}
               className="mb-6 sm:mb-8"
             >
-              <div className="relative inline-block cursor-pointer group">
+              <div className="relative inline-block">
+                <iframe
+                  src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=3684997"
+                  className="border-0 w-[320px] h-[86px] sm:w-[380px] sm:h-[90px] rounded-xl"
+                  title="TryHackMe Badge"
+                  loading="lazy"
+                />
                 <a
                   href="https://tryhackme.com/r/p/1mth3prieSt"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="thm-badge-link flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3 sm:py-4 rounded-xl border border-gray-700/60 bg-gradient-to-r from-[#1a1a2e]/80 to-[#0d0d0d]/80 hover:border-[#00ff41]/50 transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(0,255,65,0.1)]"
-                >
-                  <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-[#00ff41]/10 flex items-center justify-center border border-[#00ff41]/20">
-                    <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-[#00ff41]" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm sm:text-base font-semibold text-gray-200 group-hover:text-white transition-colors">TryHackMe Profile</span>
-                    <span className="text-xs sm:text-sm font-mono text-gray-500 group-hover:text-[#00ff41]/70 transition-colors">@1mth3prieSt · Top 1% · 5988 pts</span>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-gray-600 group-hover:text-[#00ff41] transition-colors ml-2 flex-shrink-0" />
-                </a>
+                  className="absolute inset-0 z-10"
+                  aria-label="View TryHackMe Profile"
+                />
               </div>
             </motion.div>
 
